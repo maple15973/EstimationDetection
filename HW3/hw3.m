@@ -1,9 +1,9 @@
 clc; clear all; close all;
-N = 100;
+N = 1000;
 f = 1/16;
 H = zeros(N,2);
-M = 10^5;
-sig = 1;
+M = 10^4;
+sig_theta = 1;
 for i=1:N
     H(i,1) = cos(2*pi*f*(i-1));
     H(i,2) = sin(2*pi*f*(i-1));
@@ -17,12 +17,12 @@ Bmse=zeros(41,1);
 
 for SNR = -20:20
     SNR
-    sig_theta = sig*10^(SNR/10);
+    sig = sig_theta*10^(-SNR/10);
     est_theta = zeros(2,M);
     theta= normrnd(0,sqrt(sig_theta),2,M);
     w = normrnd(0,sqrt(sig),N,M);
     x = H*theta+w;
-    est_theta = sig_theta*H'*x/(1+N/2 * sig_theta/sig);
+    est_theta = sig_theta/sig*H'*x/(1+(N/2) * (sig_theta/sig));
     true_theta_mean(SNR+21,:)=mean(theta,2);
     est_theta_mean(SNR+21,:)=mean(est_theta,2);
     true_theta_var(SNR+21,:)=var(theta,0,2);
